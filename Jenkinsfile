@@ -1,22 +1,22 @@
-pipeline{
+pipeline {
     agent any
-    tools{
-        maven 'local_maven'
+    tools {
+        maven 'local_maven'  // Ensure Maven is configured in Jenkins tool settings
     }
-    stages{
-        stage ('Build'){
-            steps{
-                sh 'mvn clean package'
+    stages {
+        stage('Build') {
+            steps {
+                bat 'mvn clean package'  // Replace 'sh' with 'bat' for Windows
             }
-            post{
-                success{
+            post {
+                success {
                     echo "Archiving the Artifacts"
                     archiveArtifacts artifacts: '**/target/*.war'
                 }
             }
         }
-        stage ('Deploy to tomcat server') {
-            steps{
+        stage('Deploy to tomcat server') {
+            steps {
                 deploy adapters: [tomcat9(credentialsId: 'Tomcat_Credentials', path: '', url: 'http://localhost:8090/')], contextPath: null, war: '**/*.war'
             }
         }
